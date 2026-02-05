@@ -1,5 +1,5 @@
 import React from "react";
-import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
+import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from "recharts";
 import theme from "../theme";
 
 const COLORS = [theme.primary, theme.success, theme.danger, "#f472b6", "#a78bfa", theme.warning];
