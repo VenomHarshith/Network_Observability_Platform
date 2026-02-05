@@ -41,8 +41,9 @@ export function subscribe(cb) {
   return () => window.removeEventListener("metricsUpdated", handler);
 }
 
-export default {
+export metricsStore ={
   getStoredMetrics,
   pushMetricsBatch,
   subscribe,
 };
+export default metricsStore;
