@@ -8,21 +8,13 @@ export default function ProtocolChart({ data = [] }) {
   const pieData = (data || []).map((d) => ({ name: d.protocol, value: d.bytes }));
   const total = pieData.reduce((s, p) => s + (p.value || 0), 0);
 
-  const legendPayload = pieData.map((entry, idx) => ({
-    value: `${entry.name} ${total ? Math.round((entry.value / total) * 100) : 0}%`,
-    type: "circle",
-    color: COLORS[idx % COLORS.length],
-    id: entry.name,
-  }));
-
-  const renderLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, name }) => {
+  const renderLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, name }) => {
     const RADIAN = Math.PI / 180;
     const radius = innerRadius + (outerRadius - innerRadius) * 0.55;
     let x = cx + radius * Math.cos(-midAngle * RADIAN);
     let y = cy + radius * Math.sin(-midAngle * RADIAN);
     const text = `${name} ${Math.round(percent * 100)}%`;
 
-    // clamp labels within the pie bounding box to avoid overflow
     const padding = 8;
     const maxX = cx + outerRadius - padding;
     const minX = cx - outerRadius + padding;
@@ -79,26 +71,30 @@ export default function ProtocolChart({ data = [] }) {
         </ResponsiveContainer>
       </div>
 
-      {/* explicit legend below chart for clear mapping of colors -> protocol */}
+      {/* custom legend */}
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center", marginTop: 8 }}>
         {pieData.map((entry, idx) => {
           const pct = total ? Math.round((entry.value / total) * 100) : 0;
           return (
             <div key={entry.name} style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 10px", borderRadius: 8, background: "#fff", boxShadow: "0 4px 12px rgba(15,23,42,0.04)", minWidth: 140 }}>
-              <div style={{ width: 12, height: 12, borderRadius: 3, background: COLORS[idx % COLORS.length], boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.06)" }} />
+              <div style={{ width: 12, height: 12, borderRadius: 3, background: COLORS[idx % COLORS.length] }} />
               <div style={{ display: "flex", flexDirection: "column" }}>
-                <div style={{ fontSize: 13, fontWeight: 700 }}>{entry.name} <span style={{ color: "var(--label)", fontWeight: 600, marginLeft: 6 }}>{pct}%</span></div>
-                <div style={{ fontSize: 12, color: "var(--label)" }}>{`${(entry.value / (1024 * 1024)).toFixed(2)} MB`}</div>
+                <div style={{ fontSize: 13, fontWeight: 700 }}>
+                  {entry.name} <span style={{ marginLeft: 6 }}>{pct}%</span>
+                </div>
+                <div style={{ fontSize: 12 }}>
+                  {(entry.value / (1024 * 1024)).toFixed(2)} MB
+                </div>
               </div>
             </div>
           );
         })}
       </div>
 
-      {/* center total badge for quick understanding */}
+      {/* total badge */}
       <div style={{ position: "absolute", left: 0, right: 0, top: "44%", display: "flex", justifyContent: "center", pointerEvents: "none" }}>
         <div style={{ background: "rgba(0,0,0,0.65)", color: "#fff", padding: "6px 10px", borderRadius: 10, fontWeight: 700 }}>
-          {`${(total / (1024 * 1024)).toFixed(2)} MB`} <span style={{ fontWeight: 400, marginLeft: 6 }}>Total</span>
+          {(total / (1024 * 1024)).toFixed(2)} MB <span style={{ fontWeight: 400, marginLeft: 6 }}>Total</span>
         </div>
       </div>
     </div>
