@@ -17,7 +17,7 @@ export function pushMetricsBatch(batch = []) {
       added = true;
     }
   }
-  // Keep metrics reasonably bounded
+
   if (store.metrics.length > 5000) {
     const drop = store.metrics.length - 5000;
     for (let i = 0; i < drop; i++) {
@@ -25,13 +25,13 @@ export function pushMetricsBatch(batch = []) {
       store.timestamps.delete(it.timestamp);
     }
   }
+
   if (added) {
     try {
       window.dispatchEvent(new CustomEvent("metricsUpdated"));
-    } catch (e) {
-      // ignore
-    }
+    } catch (e) {}
   }
+
   return store.metrics;
 }
 
@@ -41,9 +41,10 @@ export function subscribe(cb) {
   return () => window.removeEventListener("metricsUpdated", handler);
 }
 
-export metricsStore ={
+const metricsStore = {
   getStoredMetrics,
   pushMetricsBatch,
   subscribe,
 };
+
 export default metricsStore;
